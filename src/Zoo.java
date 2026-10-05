@@ -1,17 +1,58 @@
-public class Zoo {
-    Animal[] animals;
-    String name;
-    String city;
-    final int nbrCages = 25;   // instruction 14 : constante (max 25 animaux)
-    int nbrAnimals;            // compteur des animaux ajoutes
+package tn.esprit.gestionzoo.entities;
 
-    // Constructeur paramétré (nbrCages n'est plus passe en parametre car c'est une constante)
+public class Zoo {
+    // instruction 18 : attributs prives
+    private Animal[] animals;
+    private String name;
+    private String city;
+    private final int nbrCages = 25;   // constante (max 25 animaux)
+    private int nbrAnimals;            // compteur des animaux ajoutes
+
+    // Constructeur paramétré
     public Zoo(String name, String city) {
-        this.name = name;
+        setName(name);   // on passe par le setter pour verifier le nom
         this.city = city;
         this.animals = new Animal[nbrCages];
         this.nbrAnimals = 0;
     }
+
+    // ===== Getters =====
+    public Animal[] getAnimals() {
+        return animals;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public int getNbrCages() {
+        return nbrCages;
+    }
+
+    public int getNbrAnimals() {
+        return nbrAnimals;
+    }
+
+    // ===== Setters =====
+    // le nom d'un zoo ne doit pas etre vide
+    public void setName(String name) {
+        if (name == null || name.isEmpty())
+            System.out.println("Erreur : le nom du zoo ne doit pas etre vide");
+        else
+            this.name = name;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    // pas de setter pour nbrCages (constante)
+    // pas de setter pour animals et nbrAnimals : ils changent seulement
+    // avec addAnimal() et removeAnimal()
 
     public void displayZoo() {
         System.out.println("Nom du zoo : " + name);
@@ -19,16 +60,14 @@ public class Zoo {
         System.out.println("Nombre de cages : " + nbrCages);
     }
 
-    // instruction 10 + 12 : ajout d'un animal
+    // instruction 17 : on utilise isZooFull() avant d'ajouter
     public boolean addAnimal(Animal animal) {
-        // zoo plein
         if (isZooFull()) {
-            System.out.println("Le zoo est plein, impossible d'ajouter " + animal.name);
+            System.out.println("Le zoo est plein, impossible d'ajouter " + animal.getName());
             return false;
         }
-        // animal deja present
         if (searchAnimal(animal) != -1) {
-            System.out.println(animal.name + " existe deja dans le zoo");
+            System.out.println(animal.getName() + " existe deja dans le zoo");
             return false;
         }
         animals[nbrAnimals] = animal;
@@ -36,7 +75,6 @@ public class Zoo {
         return true;
     }
 
-    // instruction 11 : affichage des animaux
     public void displayAnimals() {
         if (nbrAnimals == 0) {
             System.out.println("Aucun animal dans le zoo");
@@ -48,23 +86,22 @@ public class Zoo {
         }
     }
 
-    // instruction 11 : recherche par nom, retourne l'indice ou -1
+    // recherche par nom, retourne l'indice ou -1
     public int searchAnimal(Animal animal) {
         for (int i = 0; i < nbrAnimals; i++) {
-            if (animals[i].name.equals(animal.name)) {
+            // name est prive dans Animal -> on utilise getName()
+            if (animals[i].getName().equals(animal.getName())) {
                 return i;
             }
         }
         return -1;
     }
 
-    // instruction 13 : suppression d'un animal
     public boolean removeAnimal(Animal animal) {
         int index = searchAnimal(animal);
         if (index == -1) {
             return false;
         }
-        // on decale les animaux qui sont apres vers la gauche
         for (int i = index; i < nbrAnimals - 1; i++) {
             animals[i] = animals[i + 1];
         }
@@ -73,12 +110,11 @@ public class Zoo {
         return true;
     }
 
-    // instruction 15 : verifier si le zoo est plein
     public boolean isZooFull() {
         return nbrAnimals >= nbrCages;
     }
 
-    // instruction 15 : retourne le zoo qui a le plus d'animaux
+    // retourne le zoo qui a le plus d'animaux
     public static Zoo comparerZoo(Zoo z1, Zoo z2) {
         if (z1.nbrAnimals >= z2.nbrAnimals) {
             return z1;
